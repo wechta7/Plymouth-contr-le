@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#153e35">
+<meta name="description" content="QC Manager - suivi du contrôle qualité et des opérateurs">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<title>QC Manager — Contrôle Qualité</title>
+<style>
+:root{--green:#153e35;--lime:#d4ef72;--bg:#f4f7f5;--card:#fff;--ink:#17221f;--muted:#64736d;--red:#b42318;--line:#dce5df}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,sans-serif}header{background:var(--green);color:#fff;padding:22px 16px 18px;position:sticky;top:0;z-index:3}header .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}h1{margin:5px 0 2px;font-size:25px}header p{margin:0;color:#dbe8e1;font-size:13px}.wrap{max-width:760px;margin:auto;padding:14px 12px 90px}.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:2px 0 14px}.nav button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 4px;color:var(--green);font-weight:700}.nav button.active{background:var(--green);color:#fff;border-color:var(--green)}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}.stat span{display:block;font-size:12px;color:var(--muted)}.stat strong{font-size:25px;display:block;margin-top:4px}.panel{margin-bottom:12px}.panel h2{font-size:17px;margin:0 0 13px}.field{margin-bottom:12px}label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}input,select,textarea{width:100%;border:1px solid #cbd8d0;border-radius:10px;padding:11px 12px;background:#fff;font:inherit;color:var(--ink)}textarea{min-height:78px;resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:11px;background:var(--green);color:#fff;font-weight:750;padding:12px 14px;width:100%;font:inherit;cursor:pointer}.btn.secondary{background:#e5eee8;color:var(--green)}.btn.danger{background:#fff0ef;color:var(--red)}.hint{font-size:12px;color:var(--muted);line-height:1.5}.entry{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:9px;background:#fff}.entry strong{display:block}.entry small{color:var(--muted)}.tag{display:inline-block;border-radius:999px;background:#e6f4dc;color:#245d32;padding:3px 8px;font-size:11px;font-weight:800;margin-top:6px}.tag.bad{background:#ffebe9;color:#a51b13}.hidden{display:none!important}.empty{color:var(--muted);font-size:13px;padding:10px 0}.report{white-space:pre-wrap;background:#f7faf8;border:1px dashed #b9cbc0;border-radius:10px;padding:12px;font-size:13px;line-height:1.55}.footer{font-size:11px;text-align:center;color:var(--muted);padding:16px}.install{background:#eff8d5;border:1px solid #d4e8a3;padding:12px;border-radius:12px;margin-bottom:12px;font-size:13px} @media(min-width:600px){.stats{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">Suivi de production</div><h1>QC Manager</h1><p>Contrôle Qualité · Journal de suivi</p></header>
+<div class="wrap">
+<div id="installTip" class="install hidden">Pour installer : ouvrez le menu <b>⋮</b> de Chrome puis choisissez <b>Installer l'application</b> ou <b>Ajouter à l'écran d'accueil</b>.</div>
+<nav class="nav">
+<button class="active" data-tab="dashboard">Tableau de bord</button><button data-tab="controle">Contrôle produit</button><button data-tab="operateurs">Opérateurs</button>
+</nav>
+<section id="dashboard">
+<div class="stats">
+<div class="stat"><span>Quantité contrôlée</span><strong id="sChecked">0</strong></div>
+<div class="stat"><span>Non conformes</span><strong id="sBad">0</strong></div>
+<div class="stat"><span>Taux conforme</span><strong id="sRate">—</strong></div>
+<div class="stat"><span>Notes opérateurs</span><strong id="sOps">0</strong></div>
+</div>
+<div class="panel"><h2>Rapport journalier</h2><div class="field"><label for="reportDate">Date du rapport</label><input id="reportDate" type="date"></div><div id="reportText" class="report">Aucune donnée pour cette date.</div><div style="height:9px"></div><button class="btn" id="copyReport">Copier le rapport</button><div style="height:8px"></div><button class="btn secondary" id="exportData">Exporter les données (JSON)</button><p class="hint">Les données sont enregistrées dans ce navigateur sur ce téléphone. Exportez régulièrement une sauvegarde. Effacer les données du navigateur peut supprimer les enregistrements.</p></div>
+<div class="panel"><h2>Contrôles récents</h2><div id="recentControls" class="empty">Aucun contrôle enregistré.</div></div>
+</section>
+<section id="controle" class="hidden">
+<div class="panel"><h2>Nouveau contrôle produit</h2>
+<form id="controlForm">
+<div class="two"><div class="field"><label for="cDate">Date</label><input id="cDate" name="date" type="date" required></div><div class="field"><label for="cTime">Heure</label><input id="cTime" name="time" type="time" required></div></div>
+<div class="field"><label for="product">Désignation du produit</label><input id="product" name="product" placeholder="Ex. Rolo / cornière" required></div>
+<div class="two"><div class="field"><label for="ref">Référence / Code</label><input id="ref" name="ref" placeholder="Référence"></div><div class="field"><label for="operator">Opérateur</label><input id="operator" name="operator" placeholder="Nom ou code"></div></div>
+<div class="two"><div class="field"><label for="checked">Quantité contrôlée</label><input id="checked" name="checked" type="number" min="0" step="1" value="0" required></div><div class="field"><label for="bad">Quantité non conforme</label><input id="bad" name="bad" type="number" min="0" step="1" value="0" required></div></div>
+<div class="two"><div class="field"><label for="length">Longueur (si applicable)</label><input id="length" name="length" placeholder="Ex. 1200 mm"></div><div class="field"><label for="width">Largeur (si applicable)</label><input id="width" name="width" placeholder="Ex. 50 mm"></div></div>
+<div class="field"><label for="defect">Type de défaut</label><select id="defect" name="defect"><option value="">Sélectionner…</option><option>Longueur non conforme</option><option>Largeur non conforme</option><option>Défaut visuel</option><option>Quantité incorrecte</option><option>Emballage / carton</option><option>Autre</option></select></div>
+<div class="field"><label for="observations">Observations</label><textarea id="observations" name="observations" placeholder="Décrire le défaut de façon précise et objective"></textarea></div>
+<button class="btn" type="submit">Enregistrer le contrôle</button>
+</form></div>
+<div class="panel"><h2>Historique des contrôles</h2><div id="allControls" class="empty">Aucun contrôle enregistré.</div></div>
+</section>
+<section id="operateurs" class="hidden">
+<div class="panel"><h2>Note opérateur</h2>
+<form id="opForm">
+<div class="two"><div class="field"><label for="opDate">Date</label><input id="opDate" type="date" required></div><div class="field"><label for="opCode">Nom / code opérateur</label><input id="opCode" placeholder="Nom ou code" required></div></div>
+<div class="field"><label for="opType">Type de note</label><select id="opType"><option>Conforme</option><option>À surveiller</option><option>Non-conformité</option><option>Sécurité</option></select></div>
+<div class="field"><label for="opDetails">Faits observés</label><textarea id="opDetails" placeholder="Indiquer les faits, l'heure et le produit si utile" required></textarea></div>
+<button class="btn" type="submit">Enregistrer la note</button>
+</form></div>
+<div class="panel"><h2>Historique des notes</h2><div id="allOps" class="empty">Aucune note enregistrée.</div></div>
+</section>
+<div class="footer">QC Manager · Version locale · Vérifiez les mesures selon les spécifications de votre usine.</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const nowTime=()=>{const d=new Date();return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
+let data=JSON.parse(localStorage.getItem('qcmanager-data')||'{"controls":[],"operators":[]}');
+function save(){localStorage.setItem('qcmanager-data',JSON.stringify(data));render()}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function controlHTML(c){return `<div class="entry"><strong>${safe(c.product)} — ${safe(c.ref||'Sans référence')}</strong><small>${safe(c.date)} ${safe(c.time)} · Opérateur : ${safe(c.operator||'—')}</small><div>Contrôlée : ${c.checked} · Non conformes : <b>${c.bad}</b></div>${c.defect?`<div>${safe(c.defect)}</div>`:''}${c.observations?`<div>${safe(c.observations)}</div>`:''}<span class="tag ${c.bad>0?'bad':''}">${c.bad>0?'Non-conforme':'Contrôle enregistré'}</span> <button class="btn danger" style="width:auto;padding:5px 9px;font-size:12px;float:right" onclick="deleteItem('controls','${c.id}')">Supprimer</button><div style="clear:both"></div></div>`}
+function opHTML(o){return `<div class="entry"><strong>${safe(o.code)}</strong><small>${safe(o.date)}</small><div>${safe(o.details)}</div><span class="tag ${o.type==='Non-conformité'?'bad':''}">${safe(o.type)}</span> <button class="btn danger" style="width:auto;padding:5px 9px;font-size:12px;float:right" onclick="deleteItem('operators','${o.id}')">Supprimer</button><div style="clear:both"></div></div>`}
+window.deleteItem=(kind,id)=>{if(confirm('Supprimer cet enregistrement ?')){data[kind]=data[kind].filter(x=>x.id!==id);save()}};
+function reportFor(date){const cs=data.controls.filter(c=>c.date===date), os=data.operators.filter(o=>o.date===date);const checked=cs.reduce((s,c)=>s+Number(c.checked||0),0),bad=cs.reduce((s,c)=>s+Number(c.bad||0),0);let lines=[`RAPPORT JOURNALIER — ${date}`,`Contrôles produits : ${cs.length}`,`Quantité contrôlée : ${checked}`,`Quantité non conforme : ${bad}`,`Taux de conformité : ${checked?((checked-bad)/checked*100).toFixed(1)+'%':'—'}`,`Notes opérateurs : ${os.length}`,'','DÉTAIL DES CONTRÔLES'];if(cs.length)cs.forEach(c=>lines.push(`- ${c.product} (${c.ref||'sans réf.}) | opérateur : ${c.operator||'—'} | contrôlée : ${c.checked} | NC : ${c.bad} | défaut : ${c.defect||'—'} | ${c.observations||'—'}`));else lines.push('- Aucun contrôle');lines.push('','SUIVI OPÉRATEURS');if(os.length)os.forEach(o=>lines.push(`- ${o.code} | ${o.type} | ${o.details}`));else lines.push('- Aucune note');return lines.join('\n')}
+function render(){const checked=data.controls.reduce((s,c)=>s+Number(c.checked||0),0),bad=data.controls.reduce((s,c)=>s+Number(c.bad||0),0);$('sChecked').textContent=checked;$('sBad').textContent=bad;$('sRate').textContent=checked?`${((checked-bad)/checked*100).toFixed(1)}%`:'—';$('sOps').textContent=data.operators.length;$('reportText').textContent=reportFor($('reportDate').value||today());$('recentControls').innerHTML=data.controls.length?data.controls.slice().reverse().slice(0,5).map(controlHTML).join(''):'<div class="empty">Aucun contrôle enregistré.</div>';$('allControls').innerHTML=data.controls.length?data.controls.slice().reverse().map(controlHTML).join(''):'<div class="empty">Aucun contrôle enregistré.</div>';$('allOps').innerHTML=data.operators.length?data.operators.slice().reverse().map(opHTML).join(''):'<div class="empty">Aucune note enregistrée.</div>'}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['dashboard','controle','operateurs'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='dashboard')render()}));
+$('controlForm').addEventListener('submit',e=>{e.preventDefault();const c={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:$('cDate').value,time:$('cTime').value,product:$('product').value.trim(),ref:$('ref').value.trim(),operator:$('operator').value.trim(),checked:Number($('checked').value),bad:Number($('bad').value),length:$('length').value.trim(),width:$('width').value.trim(),defect:$('defect').value,observations:$('observations').value.trim()};if(c.bad>c.checked){alert('La quantité non conforme ne peut pas dépasser la quantité contrôlée.');return}data.controls.push(c);save();e.target.reset();$('cDate').value=today();$('cTime').value=nowTime();$('checked').value=0;$('bad').value=0;alert('Contrôle enregistré.');});
+$('opForm').addEventListener('submit',e=>{e.preventDefault();data.operators.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:$('opDate').value,code:$('opCode').value.trim(),type:$('opType').value,details:$('opDetails').value.trim()});save();e.target.reset();$('opDate').value=today();alert('Note opérateur enregistrée.');});
+$('reportDate').addEventListener('change',render);
+$('copyReport').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(reportFor($('reportDate').value||today()));alert('Rapport copié.')}catch(e){const r=$('reportText'),range=document.createRange();range.selectNodeContents(r);const s=getSelection();s.removeAllRanges();s.addRange(range);alert('Sélectionnez puis copiez le rapport.')}});
+$('exportData').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='qc-manager-sauvegarde-'+today()+'.json';a.click();URL.revokeObjectURL(url)});
+$('cDate').value=$('opDate').value=$('reportDate').value=today();$('cTime').value=nowTime();render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if('serviceWorker' in navigator && !window.matchMedia('(display-mode: standalone)').matches){$('installTip').classList.remove('hidden')}
+</script>
+</body></html>
